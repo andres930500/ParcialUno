@@ -8,7 +8,7 @@
 </div>
 <div class="container">
     <div class="row">
-        <form action="/Country" method="post" class="row">
+        <form action="/countries" method="post" class="row">
             <div class="col-6">
                 <label for="Nombre" class="form-label">Nombre</label>
                 <input type="text" name="Nombre" id="Nombre" class="form-control" required>
@@ -18,7 +18,7 @@
                 <input type="text" name="Capital" id="Capital" class="form-control" required>
             </div>
             <div class="col-6">
-                <label for "Edad" class="form-label">Edad</label>
+                <label for="Edad" class="form-label">Edad</label>
                 <input type="number" name="Edad" id="Edad" class="form-control" required>
             </div>
             <div class="col-6">
@@ -27,7 +27,9 @@
             </div>
             <div class="col-12">
                 <label for="ComidasTipicas" class="form-label">Comidas Típicas</label>
-                <input type="text" name="ComidasTipicas" id="ComidasTipicas" class="form-control" required>
+                <input type="text" name="ComidasTipicas" id="ComidasTipicas" class="form-control">
+                <button type="button" class="btn btn-success" onclick="addComidaTipica()">Agregar Comida</button>
+                <ul id="comidas-tipicas-list"></ul>
             </div>
             <div class="col-6">
                 <label for="Poblacion" class="form-label">Población</label>
@@ -60,3 +62,27 @@
     </div>
 </div>
 <%- include('../layouts/footer') -%>
+
+<script>
+    function addComidaTipica() {
+        const comidaInput = document.getElementById("ComidasTipicas");
+        const comidaNombre = comidaInput.value;
+
+        if (comidaNombre.trim() !== "") {
+            const comidasList = document.getElementById("comidas-tipicas-list");
+            const listItem = document.createElement("li");
+            listItem.textContent = comidaNombre;
+            comidasList.appendChild(listItem);
+            
+            // Agrega el nombre de la comida típica como un campo oculto en el formulario
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "ComidasTipicasList";
+            hiddenInput.value = comidaNombre;
+            comidaInput.parentNode.appendChild(hiddenInput);
+
+            // Limpia el campo de entrada
+            comidaInput.value = "";
+        }
+    }
+</script>
