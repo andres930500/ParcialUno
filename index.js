@@ -3,6 +3,7 @@ const express = require('express');
 const Joi = require('joi');
 const path = require('path');
 
+const PDFDocument = require('pdfkit');
 // Importa el módulo 'fs' (File System) para trabajar con archivos
 const fs = require('fs');
 
@@ -25,6 +26,8 @@ app.use(express.json());
 // Configura el motor de vistas y la carpeta de vistas
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'ejs');
+
+
 
 // Define un esquema de validación utilizando Joi
 const countrySchema = Joi.object({
@@ -140,7 +143,6 @@ app.put('/Country/:id', (req, res) => {
     res.json({ 'ok': true, country: country });
 });
 
-// Ruta para borrar un país por su ID
 app.delete('/Country/:id', (req, res) => {
     // Obtener el ID proporcionado en la URL
     const id = req.params.id;
@@ -165,34 +167,35 @@ app.delete('/Country/:id', (req, res) => {
 
     // Responder con un mensaje de éxito
     res.json({ 'ok': true });
+
 });
 
-// Ruta para obtener todos los países, con la opción de filtrar por clave
+
 app.get('/CountryFilter', (req, res) => {
-    // Leer los datos del archivo especificado en FILE_NAME
+   
     const data = readFile(FILE_NAME);
 
-    // Verificar si se proporcionó un parámetro de consulta para filtrar
+    
     const { filterKey, filterValue } = req.query;
 
     if (filterKey && filterValue) {
-        // Filtrar los registros según la clave y el valor especificados en el parámetro de consulta
+      
         const filteredData = data.filter(country => country[filterKey] === filterValue);
 
         if (filteredData.length === 0) {
-            // Si no se encontraron registros que coincidan con el filtro, responder con un mensaje
+           
             res.status(404).json({ message: 'No se encontraron registros que coincidan con el filtro.' });
         } else {
-            // Responder con los registros filtrados
+       
             res.json(filteredData);
         }
     } else {
-        // Si no se proporcionó un parámetro de consulta, enviar todos los registros
+        
         res.json(data);
     }
 });
 
-// Rutas para la creación y visualización de países
+
 app.get('/countries', (req, res) => {
     const countries = readFile(FILE_NAME);
     res.render('country/index', { countries: countries });
@@ -212,9 +215,9 @@ app.post('/countries', (req, res) => {
     }
 });
 
-// Definición de la ruta para mostrar el formulario de creación de país
+
 app.get('/countries/create', (req, res) => {
-    // Mostrar el formulario
+  
     res.render('country/create');
 });
 
@@ -239,35 +242,114 @@ app.get('/countriess', (req, res) => {
     const filterValue = req.query.filterValue;
 
     if (filterKey && filterValue) {
-        // Filtra los registros según la clave y el valor especificados
+       
         const filteredCountries = countries.filter(country => country[filterKey] === filterValue);
         res.render('country/index', { countries: filteredCountries });
     } else {
-        // Si no se proporciona un filtro, muestra todos los países
+       
         res.render('country/index', { countries });
     }
 });
 
-// Middleware para registrar solicitudes HTTP en el archivo access_log.txt
+
 app.use((req, res, next) => {
     const accessLogPath = path.join(__dirname, 'access_log.txt');
 
-    // Obtiene la fecha y hora actual
+    
     const now = new Date();
     const formattedDate = now.toISOString().replace('T', ' ').split('.')[0];
 
-    // Obtiene información sobre la solicitud
     const requestInfo = `${formattedDate} [${req.method}] [${req.path}]`;
 
-    // Registra la solicitud en el archivo access_log.txt
+    
     fs.appendFile(accessLogPath, requestInfo + '\n', (err) => {
         if (err) {
             console.error('Error al escribir en el archivo access_log.txt:', err);
         }
     });
 
-    next(); // Continúa con la ejecución normal
+    next(); 
 });
+
+function getCountryByID(id) {
+  
+    const countries = readFile(FILE_NAME); 
+ 
+    const country = countries.find(country => country.id === id);
+
+    return country; 
+}
+
+
+app.get('/generate-pdf/:id', (req, res) => {
+    const id = req.params.id;
+  
+ 
+    const country = getCountryByID(id);
+  
+    if (!country) {
+      res.status(404).json({ message: 'Country not found' });
+      return;
+    }
+  
+    const pdfDoc = new PDFDocument();
+    const pdfFilePath = `./PDFs/${country.Nombre}.pdf`;
+  
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${country.Nombre}.pdf"`);
+  
+    pdfDoc.pipe(fs.createWriteStream(pdfFilePath)); 
+  
+  
+    pdfDoc
+      .fontSize(18)
+      .text('Detalles del País', { align: 'center' })
+      .fontSize(12)
+      .text(`Nombre: ${country.Nombre}`)
+      .text(`Capital: ${country.Capital}`)
+      .text(`Edad: ${country.Edad}`)
+      .text(`Es Independiente: ${country.EsIndependiente ? 'Sí' : 'No'}`)
+      .text('Comidas Típicas:')
+      .list(country.ComidasTipicas.map(comida => `- ${comida.Nombre}`))
+      .text(`Población: ${country.Poblacion}`)
+      .text(`Presidente: ${country.Presidente}`)
+      .text(`Continente: ${country.Continente}`);
+  
+    pdfDoc.end();
+  });
+  
+
+ 
+// Ruta para mostrar el formulario de actualización de un país
+app.get('/Country/update/:id', (req, res) => {
+    const id = req.params.id;
+    const countries = readFile(FILE_NAME);
+    const country = countries.find(country => country.id === id);
+
+    if (!country) {
+        res.status(404).json({ message: 'Country not found' });
+    } else {
+        res.render('country/update', { country });
+    }
+});
+
+// Ruta para procesar la actualización de un país
+app.post('/Country/update/:id', (req, res) => {
+    const id = req.params.id;
+    const countries = readFile(FILE_NAME);
+    const countryIndex = countries.findIndex(country => country.id === id);
+
+    if (countryIndex < 0) {
+        res.status(404).json({ message: 'Country not found' });
+    } else {
+        const updatedCountry = req.body;
+        countries[countryIndex] = { ...countries[countryIndex], ...updatedCountry };
+        writeFile(FILE_NAME, countries);
+        res.redirect('/countries'); // Redirige a la lista de países o la página que desees
+    }
+});
+
+
 
 
 // Iniciar el servidor y escuchar en el puerto 3000
