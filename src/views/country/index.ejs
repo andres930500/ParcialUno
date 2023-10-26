@@ -34,6 +34,7 @@
                         <th scope="col">Presidente</th>
                         <th scope="col">Continente</th>
                         <th scope="col">Borrar</th>
+                        <th scope="col">Generar PDF</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,9 +48,7 @@
                                 <td><%= country.EsIndependiente ? 'Sí' : 'No' %></td>
                                 <td>
                                     <ul>
-                                        <% country.ComidasTipicas.forEach(comida => { %>
-                                            <li><%= comida.Nombre %></li>
-                                        <% }); %>
+                                        <li><%= country.ComidasTipicasList %></li>
                                     </ul>
                                 </td>
                                 <td><%= country.Poblacion %></td>
@@ -57,14 +56,20 @@
                                 <td><%= country.Continente %></td>
                                 <td>
                                     <form action="/countries/delete/<%= country.id %>" method="post" onsubmit="return confirm('¿Estás seguro que deseas borrar?');">
-                                        <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                        <button type="submit" class="btn btn-outline-danger">Delete</button>
                                     </form>
+                                </td>
+                                <td>
+                                    <a href="/generate-pdf/<%= country.id %>" class="btn btn-primary">Generate PDF</a>
+                                </td>
+                                <td>
+                                    <a href="/Country/update/<%= country.id %>" class="btn btn-warning">Actualizar</a>
                                 </td>
                             </tr>
                         <% }); %>
                     <% } else { %>
                         <tr>
-                            <td colspan="10">No hay países disponibles.</td>
+                            <td colspan="11">No hay países disponibles.</td>
                         </tr>
                     <% } %>
                 </tbody>
