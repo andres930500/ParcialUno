@@ -1,0 +1,43 @@
+<%- include('../layouts/header', { title: 'Update Country' }) -%>
+
+<div class="container">
+    <h1 class="alert alert-success text-center">Update Country</h1>
+    <form action="/Country/update/<%= country.id %>" method="post">
+        <div class="form-group">
+            <label for="Nombre">Nombre</label>
+            <input type="text" class="form-control" id="Nombre" name="Nombre" value="<%= country.Nombre %>" required>
+        </div>
+        <div class="form-group">
+            <label for="Capital">Capital</label>
+            <input type="text" class="form-control" id="Capital" name="Capital" value="<%= country.Capital %>" required>
+        </div>
+        <div class="form-group">
+            <label for="Edad">Edad</label>
+            <input type="number" class="form-control" id="Edad" name="Edad" value="<%= country.Edad %>" required>
+        </div>
+        <div class="form-group">
+            <label for="EsIndependiente">Es Independiente</label>
+            <select class="form-control" id="EsIndependiente" name="EsIndependiente">
+                <option value="true" <%= country.EsIndependiente ? 'selected' : '' %>>Sí</option>
+                <option value="false" <%= !country.EsIndependiente ? 'selected' : '' %>>No</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="Poblacion">Población</label>
+            <input type="number" class="form-control" id="Poblacion" name="Poblacion" value="<%= country.Poblacion %>" required>
+        </div>
+        <div class="form-group">
+            <label for="Presidente">Presidente</label>
+            <input type="text" class="form-control" id="Presidente" name="Presidente" value="<%= country.Presidente %>" required>
+        </div>
+        <div class="form-group">
+            <label for="Continente">Continente</label>
+            <input type="text" class="form-control" id="Continente" name="Continente" value="<%= country.Continente %>" required>
+        </div>
+        <!-- Agrega campos para otros atributos del país aquí -->
+
+        <button type="submit" class="btn btn-primary">Update Country</button>
+    </form>
+</div>
+
+<%- include('../layouts/footer') -%>
