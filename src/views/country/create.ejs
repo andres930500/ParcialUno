@@ -1,0 +1,62 @@
+<%- include('../layouts/header', { title: 'Create a new country' }) -%>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="alert alert-success text-center">Create a new country</h1>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <form action="/Country" method="post" class="row">
+            <div class="col-6">
+                <label for="Nombre" class="form-label">Nombre</label>
+                <input type="text" name="Nombre" id="Nombre" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label for="Capital" class="form-label">Capital</label>
+                <input type="text" name="Capital" id="Capital" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label for "Edad" class="form-label">Edad</label>
+                <input type="number" name="Edad" id="Edad" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label for="EsIndependiente" class="form-check-label">¿Es independiente?</label>
+                <input type="checkbox" name="EsIndependiente" id="EsIndependiente" class="form-check-input">
+            </div>
+            <div class="col-12">
+                <label for="ComidasTipicas" class="form-label">Comidas Típicas</label>
+                <input type="text" name="ComidasTipicas" id="ComidasTipicas" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label for="Poblacion" class="form-label">Población</label>
+                <input type="number" name="Poblacion" id="Poblacion" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label for="Presidente" class="form-label">Presidente</label>
+                <input type="text" name="Presidente" id="Presidente" class="form-control" required>
+            </div>
+            <div class="col-6">
+                <label for="Continente" class="form-label">Continente</label>
+                <select name="Continente" id="Continente" class="form-select" required>
+                    <option value="América del Sur">América del Sur</option>
+                    <option value="América del Norte">América del Norte</option>
+                    <option value="Europa">Europa</option>
+                    <option value="Asia">Asia</option>
+                    <option value="África">África</option>
+                    <option value="Oceanía">Oceanía</option>
+                </select>
+            </div>
+            <div class="col-12 d-grid mt-4">
+                <button type="submit" class="btn btn-outline-success">Create</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-12 d-grid mt-4">
+            <a href="/countries" class="btn btn-outline-secondary">Back to Countries list</a>
+        </div>
+    </div>
+</div>
+<%- include('../layouts/footer') -%>

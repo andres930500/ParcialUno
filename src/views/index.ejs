@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country App</title>
+</head>
+<body>
+    <h1>¡Hola <%= name %>, bienvenido a nuestra aplicación de Paises!</h1>
+    <p>Estas son mis Paises:</p>
+    <ul>
+        <% students.forEach(student => { %>
+            <li><%= student %></li>
+        <% }); %>
+    </ul>
+</body>
+</html>

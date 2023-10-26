@@ -1,0 +1,80 @@
+<%- include('../layouts/header', { title: 'Countries list' }) -%>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="alert alert-success text-center">Countries list</h1>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form action="/countriess" method="get">
+                <div class="form-group">
+                    <label for="filterKey">Filter by:</label>
+                    <select id="filterKey" name="filterKey">
+                        <option value="Nombre">Nombre</option>
+                        <option value="Capital">Capital</option>
+                        <!-- Agrega más opciones de filtro según tus atributos -->
+                    </select>
+                    <input type="text" name="filterValue" placeholder="Enter filter value">
+                    <button type="submit" class="btn btn-primary">Apply Filter</button>
+                </div>
+            </form>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Capital</th>
+                        <th scope="col">Edad</th>
+                        <th scope="col">Es Independiente</th>
+                        <th scope="col">Comidas Típicas</th>
+                        <th scope="col">Población</th>
+                        <th scope="col">Presidente</th>
+                        <th scope="col">Continente</th>
+                        <th scope="col">Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (Array.isArray(countries)) { %>
+                        <% countries.forEach(country => { %>
+                            <tr>
+                                <td scope="row"><%= country.id %></td>
+                                <td><%= country.Nombre %></td>
+                                <td><%= country.Capital %></td>
+                                <td><%= country.Edad %></td>
+                                <td><%= country.EsIndependiente ? 'Sí' : 'No' %></td>
+                                <td>
+                                    <ul>
+                                        <% country.ComidasTipicas.forEach(comida => { %>
+                                            <li><%= comida.Nombre %></li>
+                                        <% }); %>
+                                    </ul>
+                                </td>
+                                <td><%= country.Poblacion %></td>
+                                <td><%= country.Presidente %></td>
+                                <td><%= country.Continente %></td>
+                                <td>
+                                    <form action="/countries/delete/<%= country.id %>" method="post" onsubmit="return confirm('¿Estás seguro que deseas borrar?');">
+                                        <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="10">No hay países disponibles.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-grid">
+            <a href="/countries/create" class="btn btn-outline-secondary">Create Country</a>
+        </div>
+    </div>
+</div>
+<%- include('../layouts/footer') -%>
